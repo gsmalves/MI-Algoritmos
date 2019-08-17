@@ -1,0 +1,489 @@
+/*******************************************************************************
+Autor: Gustavo dos Santos Menezes Alves
+Componente Curricular: Algoritmos I
+Concluido em: 28/11/2017
+Declaro que este código foi elaborado por mim de forma individual e não contém nenhum
+trecho de código de outro colega ou de outro autor, tais como provindos de livros e
+apostilas, e páginas ou documentos eletrônicos da Internet. Qualquer trecho de código
+de outra autoria que não a minha está destacado com uma citação para o autor e a fonte
+do código, e estou ciente que estes trechos não serão considerados para fins de avaliação.
+******************************************************************************************/
+#include <stdio.h>//Biblioteca de entrada e saída.//
+#include <stdlib.h>//Biblioteca que funciona como prompt de comando do sistema operacional utilizado.//
+#include <locale.h>//Biblioteca utilizada para poder acentuar as palavras em português. //
+#include <string.h>//Biblioteca que contém uma série de funções para manipular strings.//
+
+
+
+typedef struct
+{
+    char nome[100]; //Nome do proponente//
+    char tipo[50]; //Para especificar se é aluno ou professor//
+
+} proponentes[5];
+typedef struct //Struct para cadastro das propostas//
+{
+    char nomep[50];
+    int data;
+    int horas;
+    char tipoapre[50];
+    proponentes prop;
+} proposta;
+typedef struct //Struct geral que serve para o cadastro como um todo//
+{
+    proposta cadastra[10];
+    char nome[50];
+
+} curso;
+void lista_cursos();  //Declaração das funções//
+void escolhe_curso();
+void exibetipo_apresent();
+void escolhe_tipo();
+void cadastro_prop();
+void mostra_selecionado();
+void escolhe_tipo();
+void mostra_hora();
+void escolhe_hora();
+void nomeProposta();
+void escolhe_dia();
+void nomes_Proponentes();
+void gera_arquivo();
+
+int main()
+{
+    setlocale(LC_ALL, "portuguese");//Complemento da biblioteca <locale.h>.
+    FILE *arquivo=NULL;
+    int quant,escolha,i=0,cont_proposta2,cont_proposta=0;
+    curso cadastro[30];
+    printf("----------------------------------------------------------------------------------------\n");
+    printf("-----------------------------------FEIRA DE GRADUAÇÃO-----------------------------------\n");
+    printf("------------------------------------------UEFS------------------------------------------\n");
+    printf("----------------------------------------------------------------------------------------\n");
+    printf("\n");
+
+    do
+    {
+        //A seguir, o menu do programa.//
+        printf("-------------------------------------\n");
+        printf("-----------------MENU----------------\n");
+        printf("-------------------------------------\n");
+        printf("1 - Novo cadastro.\n");
+        printf("2 - Gerar relatório em arquivo texto e Finalizar.\n");
+        printf("Digite uma das opções listadas acima:\n");
+        scanf(" %d",&escolha);
+        fflush(stdin);  //Funçaõ de escolha de tipo de apresentação//
+        switch(escolha)//Estrutura de seleção utilizada para acompanhar o menu do programa.//
+        {
+        case 1 ://Optando pelo número 1, o usuário irá realizar o cadastramento.//
+            printf("Digite a quantidade de cursos que deseja cadastrar: ");
+            scanf("%d",&quant);
+            lista_cursos(quant);       //Aqui está localizado a chamada de todas as funções que executam o cadastro das propostas//
+            escolhe_curso(cadastro,quant);
+            system("cls");//Para limpar tela//
+            mostra_selecionado(cadastro,quant);
+            nomeProposta(cadastro,quant);
+            escolhe_dia(cadastro,quant,cont_proposta2,cont_proposta);
+            mostra_hora(quant);
+            escolhe_hora(cadastro,quant);
+            exibetipo_apresent(quant);
+            escolhe_tipo(cadastro,quant);
+            nomes_Proponentes(cadastro,quant);
+            printf("Deseja confirmar o cadastro e gerar o arquivo texto ou fazer um novo cadastro?");
+
+            break;
+        case 2 :
+            gera_arquivo(cadastro,quant,cont_proposta2,cont_proposta);// Função para gerar arquivo de texto//
+            break;
+        default:
+            printf("Inválido");
+            break;
+        }
+
+    }
+    while (escolha!=2); //Laço de repetição geral do programa, mostrado sempre após um cadastro, para usuario escolher a opção que deseja//
+}
+void lista_cursos(int quant)//Função que mostra todos os cursos para usuario escolher//
+{
+    int i;
+    for(i=0; i<quant; i++)
+    {
+        printf("--------------------------------------------------------\n");
+        printf("                    Lista de cursos                     \n");
+        printf("--------------------------------------------------------\n");
+        printf("\n");
+        printf("                 Tecnologia e Ciências Exatas           \n");
+        printf("[0]Engenharia Civil\n");
+        printf("[1]Engenharia de Computação \n");
+        printf("[2]Engenharia de Alimentos \n");
+        printf("[3]Licenciatura em Matemática \n");
+        printf("[4]Lic. e Bacharelado em Física  \n");
+        printf("[5]Licenciatura em Química \n");
+        printf(" \n");
+        printf("                 Ciências Humanas e Filosofia            \n");
+        printf("[6]Administração\n");
+        printf("[7]Ciências Contábeis l\n");
+        printf("[8]Ciências Econômicas \n");
+        printf("[9]Lic. e Bacharelado em Filosofia  \n");
+        printf("[10]Licenciatura em História \n");
+        printf("[11]Lic. e Bacharelado em Geografia \n");
+        printf("[12]Licenciatura em Pedagogia \n");
+        printf("[13]Direito \n");
+        printf("[14]Psicologia \n");
+        printf("                 Ciências Humanas e Filosofia            \n");
+        printf("[15]Licenciatura em Letras Vernáculas \n");
+        printf("[16]Licenciatura em Letras c/ Inglês \n");
+        printf("[17]Licenciatura em Letras c/ Francês \n");
+        printf("[18]Licenciatura em Letras c/ Espanhol \n");
+        printf("[19]Licenciatura em Música  \n");
+        printf("                 Ciências Naturais e da Saúde             \n");
+        printf("[20]Licenciatura em Ciências Biológicas  \n");
+        printf("[21]Bacharelado em Ciências Biológicas  \n");
+        printf("[22]Licenciatura em Educação Física \n");
+        printf("[23]Enfermagem  \n");
+        printf("[24]Odontologia  \n");
+        printf("[25]Farmácia  \n");
+        printf("[26]Medicina  \n");
+        printf("[27]Agronomia\n");
+
+    }
+}
+void escolhe_curso(curso cadastro[],int quant)//Função que é para o usuario escolher o numero correspondente aos cursos desejados//
+{
+    int opcao,i;
+    for(i=0; i<quant; i++)//Laço utilizado para o usuario escolher a quantidade de cursos de acordo com o que ele digitou antes do cadastro//
+    {
+        printf("Digite o número correspondente ao curso que deseja cadastrar: ");
+        scanf("%d",&opcao);
+        fflush(stdin);
+
+        switch(opcao)
+        {
+        case 0:
+            strcpy (cadastro[i].nome, "Engenharia Civil\0");
+            break;
+        case 1:
+            strcpy (cadastro[i].nome, "Engenharia de Computação\0");
+            break;
+        case 2:
+            strcpy (cadastro[i].nome, "Engenharia de Alimentos\0");
+            break;
+        case 3:
+            strcpy (cadastro[i].nome, "Licenciatura em Matemática\0");
+            break;
+        case 4:
+            strcpy (cadastro[i].nome, "Lic. e Bacharelado em Física \0");
+            break;
+        case 5:
+            strcpy (cadastro[i].nome, "Licenciatura em Química \0");
+            break;
+        case 6:
+            strcpy (cadastro[i].nome, "Administração \0");
+            break;
+        case 7:
+            strcpy (cadastro[i].nome, "Ciências Contábeis \0");
+            break;
+        case 8:
+            strcpy (cadastro[i].nome, "Ciências Econômicas \0");
+            break;
+        case 9:
+            strcpy (cadastro[i].nome, "Lic. e Bacharelado em Filosofia \0");
+            break;
+        case 10:
+            strcpy(cadastro[i].nome, "Licenciatura em História \0");
+            break;
+        case 11:
+            strcpy (cadastro[i].nome, "Lic. e Bacharelado em Geografia\0");
+            break;
+        case 12:
+            strcpy (cadastro[i].nome, "Licenciatura em Pedagogia \0");
+            break;
+        case 13:
+            strcpy (cadastro[i].nome, "Direito \0");
+            break;
+        case 14:
+            strcpy (cadastro[i].nome, "Psicologia \0");
+            break;
+        case 15:
+            strcpy (cadastro[i].nome, "Licenciatura em Letras Vernáculas \0");
+            break;
+        case 16:
+            strcpy (cadastro[i].nome, "Licenciatura em Letras c/ Inglês \0");
+            break;
+        case 17:
+            strcpy (cadastro[i].nome, "Licenciatura em Letras c/ Francês \0");
+            break;
+        case 18:
+            strcpy (cadastro[i].nome, "Licenciatura em Letras c/ Espanhol \0");
+            break;
+        case 19:
+            strcpy (cadastro[i].nome, "Licenciatura em Música \0");
+            break;
+        case 20:
+            strcpy (cadastro[i].nome, "Licenciatura em Ciências Biológicas \0");
+            break;
+        case 21:
+            strcpy (cadastro[i].nome, "Bacharelado em Ciências Biológicas \0");
+            break;
+        case 22:
+            strcpy (cadastro[i].nome, "Licenciatura em Educação Física \0");
+            break;
+        case 23:
+            strcpy (cadastro[i].nome, "Enfermagem \0");
+            break;
+        case 24:
+            strcpy (cadastro[i].nome, "Odontologia \0");
+            break;
+        case 25:
+            strcpy (cadastro[i].nome, "Farmácia \0");
+            break;
+        case 26:
+            strcpy (cadastro[i].nome, "Medicina \0");
+            break;
+        case 27:
+            strcpy (cadastro[i].nome, "Agronomia\0");
+            break;
+        default:
+            printf("Inválido");
+            break;
+        }
+
+    }
+
+
+
+
+
+}
+
+void mostra_selecionado(curso cadastro[],int quant)// Aqui mostra os cursos que o usuario escolheu para cadastrar//
+{
+    int i;
+    for(i=0; i<quant; i++)
+    {
+        printf("Curso escolhido: %s\n",cadastro[i].nome);
+    }
+
+}
+void exibetipo_apresent(int quant)
+{
+    int i;
+    for(i=0; i<quant; i++)
+    {
+        printf("--------------------------------------------------------\n");
+        printf("                   Tipo de Apresentação                 \n");
+        printf("--------------------------------------------------------\n");
+        printf("[1]Oral\n");
+        printf("[2]Oficina\n");
+        printf("[3]Pôster\n");
+        printf("[4]Laboratório\n");
+    }
+}
+void escolhe_tipo(curso cadastro[],int quant)//Funçaõ de escolha de tipo de apresentação//
+{
+    int i, opcao;
+
+    for(i=0; i<quant; i++)//Laço de acordo com a quantidade de cursos digitado pelo usuario//
+    {
+        scanf("%d",&opcao);
+        fflush(stdin);//Função utilizada para limpar o buffer do teclado//
+        //for(i=0;i<10;i++){
+        switch(opcao)
+        {
+        case 1:
+            strcpy (cadastro[i].cadastra[i].tipoapre, "Oral\0");
+            break;
+        case 2:
+            strcpy (cadastro[i].cadastra[i].tipoapre, "Oficina\0");
+            break;
+        case 3:
+            strcpy (cadastro[i].cadastra[i].tipoapre, "Pôster\0");
+            break;
+        case 4:
+            strcpy (cadastro[i].cadastra[i].tipoapre, "Laboratório \0");
+        default:
+            printf("Inválido");
+            break;
+        }
+    }
+}
+void escolhe_dia(curso cadastro[],int quant,int cont_proposta,int cont_proposta2)//Escolha dos dias//
+{
+    int i,op;
+
+    for(i=0; i<quant; i++)
+    {
+        printf("--------------------------------------------------------\n");
+        printf("                           Data                         \n");
+        printf("--------------------------------------------------------\n");
+        printf("Escolha o da data da apresentação do %s\n",cadastro[i].nome);
+        printf("[1] para dia 23/11\n");
+        printf("[2] para dia 24/11\n");
+        scanf("%d",&op);
+        switch(op)
+        {
+        case 1:
+            cadastro[i].cadastra[i].data=23;
+            cont_proposta=cont_proposta+1;
+            break;
+        case 2:
+            cadastro[i].cadastra[i].data=24;
+            cont_proposta2=cont_proposta2+1;
+            break;
+        default:
+            printf("Inválido");
+            break;
+        }
+    }
+}
+void mostra_hora(int quant)
+{
+    int i;
+
+    for(i=0; i<quant; i++)
+    {
+        printf("--------------------------------------------------------\n");
+        printf("                         Horário                        \n");
+        printf("--------------------------------------------------------\n");
+        printf("[8]8:00hrs\n");
+        printf("[9]9:00hrs\n");
+        printf("[10]10:00hrs\n");
+        printf("[11]11:00hrs\n");
+        printf("[12]12:00hrs\n");
+        printf("[13]13:00hrs\n");
+        printf("[14]14:00hrs\n");
+        printf("[15]15:00hrs\n");
+        printf("[16]16:00hrs\n");
+        printf("[17]17:00hrs\n");
+        printf("[18]18:00hrs\n");
+        printf("[19]19:00hrs\n");
+    }
+}
+void escolhe_hora(curso cadastro[],int quant)//Escolha do horario//
+{
+    int i, op;
+
+    for(i=0; i<quant; i++)
+    {
+
+        printf("Digite o número correspondente ao horário para o curso %s: ",cadastro[i].nome);
+        scanf("%d",&op);
+        fflush(stdin);
+        switch(op)
+        {
+        case 8:
+            cadastro[i].cadastra[i].horas=8;
+            break;
+        case 9:
+            cadastro[i].cadastra[i].horas=9;
+            break;
+        case 10:
+            cadastro[i].cadastra[i].horas=10;
+            break;
+        case 11:
+            cadastro[i].cadastra[i].horas=11;
+            break;
+        case 12:
+            cadastro[i].cadastra[i].horas=12;
+            break;
+        case 13:
+            cadastro[i].cadastra[i].horas=13;
+            break;
+        case 14:
+            cadastro[i].cadastra[i].horas=14;
+            break;
+        case 15:
+            cadastro[i].cadastra[i].horas=15;
+            break;
+        case 16:
+            cadastro[i].cadastra[i].horas=16;
+            break;
+        case 17:
+            cadastro[i].cadastra[i].horas=17;
+            break;
+        case 18:
+            cadastro[i].cadastra[i].horas=18;
+            break;
+        case 19:
+            cadastro[i].cadastra[i].horas=19;
+            break;
+        default:
+            printf("Inválido");
+            break;
+        }
+    }
+}
+void nomes_Proponentes(curso cadastro[], int quant)
+{
+    int i,quanti;
+
+    for(i=0; i<quant; i++)
+    {
+        printf("Digite a quantidade de proponentes que partiparão da proposta do curso %s(max 5 pessoas): ",cadastro[i].nome);
+        scanf("%d",&quanti);
+        fflush(stdin);
+
+
+         for(i=0;i<=quanti;i++){//Laço de acordo com quantidade de proponentes//
+            printf("Digite o nome do proponente :");
+            gets(cadastro[i].cadastra[i].prop[i].nome);
+            fflush(stdin);
+            printf("Informe se é aluno ou professor, por favor: ");
+            gets(cadastro[i].cadastra[i].prop[i].tipo);
+            fflush(stdin);
+
+        }
+    }
+}
+void nomeProposta(curso cadastro[],int quant)
+{
+    int i;
+
+    for(i=0; i<quant; i++)
+    {
+        printf("Digite o nome da apresentação do curso %s:\n ",cadastro[i].nome);
+        gets(cadastro[i].cadastra[i].nomep);
+    }
+}
+void gera_arquivo(curso cadastro[],int quant)//Função que gera arquivo texto//
+{
+    int i=0;
+    char nomearq[20];
+    FILE*arquivo;//Ponteiro que aponta para o arquivo//
+
+    printf("Digite o nome do arquivo que deseja salvar:\n");
+    gets(nomearq);
+    strcat(nomearq,".txt");
+
+    arquivo = fopen(nomearq,"w");//Para abrir arquivo de texto , com opção de escrever.//
+    if(arquivo == NULL)
+    {
+        printf("Erro na abertura do arquivo!");
+    }
+    else
+    {
+     //Abaixo o relatorio com os cursos cadastrados//
+     fprintf(arquivo,"----------------------------------------------------------------------------------------------------------------\n" );
+     fprintf(arquivo,"--------------------------------------------RELATORIO DE CADASTROS----------------------------------------------\n");
+     fprintf(arquivo,"----------------------------------------------------------------------------------------------------------------\n" );
+
+     for(i=0;i<quant;i++){
+        fprintf(arquivo,"----------------------------------------------------------------------------------------------------------------\n" );
+        fprintf(arquivo,"Curso: %s\n",cadastro[i].nome);
+        fprintf(arquivo,"Tipo de apresentacao: %s\n",cadastro[i].cadastra[i].tipoapre);
+        fprintf(arquivo,"Titulo: %s\n",cadastro[i].cadastra[i].nomep);
+        fprintf(arquivo,"Dia: %d\n",cadastro[i].cadastra[i].data);
+        fprintf(arquivo,"Horario: %d horas\n",cadastro[i].cadastra[i].horas);
+        for(i=0;i<5;i++){
+        fprintf(arquivo,"Nome proponente: %s - %s \n",cadastro[i].cadastra[i].prop[i].nome,cadastro[i].cadastra[i].prop[i].tipo);
+        }
+        fprintf(arquivo,"----------------------------------------------------------------------------------------------------------------\n" );
+
+
+
+
+
+    }
+
+    fclose(arquivo);//Para fechar o arquivo//
+}
+}
